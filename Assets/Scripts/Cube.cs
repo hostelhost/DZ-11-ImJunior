@@ -1,6 +1,4 @@
-using System.Collections;
-using System.Collections.Generic;
-using System.Runtime.CompilerServices;
+using System;
 using UnityEngine;
 
 [RequireComponent(typeof(Rigidbody))]
@@ -8,25 +6,13 @@ using UnityEngine;
 public class Cube : MonoBehaviour
 {
     private int _separationProbability = 100;
+    private int _decreaseNumber = 2;
+
+    public event Action<Cube> Separation;
 
     private void Start()
     {
-        GetRandomColor();
-    }
-
-    private void OnEnable()
-    {
-        //подписка на событие клик по кубу
-    }
-
-    private void OnDisable()
-    {
-        
-    }
-
-    private void OnDestroy() //тут реализовать эффект раскидывания ранее созданых кубор
-    {
-        
+        SetRandomColor();
     }
 
     private void OnMouseUpAsButton()
@@ -34,29 +20,34 @@ public class Cube : MonoBehaviour
         OnClick(GetProbability(_separationProbability));
     }
 
+    private void OnDestroy()
+    {
+        Separation = null;
+    }
+
+    public void MitigateImpact()
+    {
+        _separationProbability /= _decreaseNumber;
+        transform.localScale /= _decreaseNumber;
+    }
+
     private void OnClick(bool isSeparation)
     {
         if (isSeparation)
-        {
-            //создать от 2 до 6 кубов
-            //Передаем в них нашу вероятность деления деленую на 2 и наш sale деленый на 2
-        }
-        else
-        {
-            Destroy(this.gameObject);
-        }
+            Separation?.Invoke(this);
+           
+        Destroy(this.gameObject);   
     }
 
     private bool GetProbability(int separationProbability)
     {
-        System.Random random = new System.Random();
+        int minimum = 1;
         int maximum = 100;
-
-        return random.Next(++maximum) <= separationProbability;
+        return UnityEngine.Random.Range(minimum, ++maximum) <= separationProbability;
     }
 
-    private void GetRandomColor()
+    private void SetRandomColor()
     {
-        GetComponent<Renderer>().material.color = new Color(Random.Range(0f, 1f), Random.Range(0f, 1f), Random.Range(0f, 1f));
+        GetComponent<Renderer>().material.color = UnityEngine.Random.ColorHSV();
     }
 }
