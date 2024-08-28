@@ -31,10 +31,10 @@ public class Cube : MonoBehaviour
 
     private void OnMouseUpAsButton()
     {
-        Click(GetProbability(_separationProbability));
+        OnClick(GetProbability(_separationProbability));
     }
 
-    private void Click(bool isSeparation)
+    private void OnClick(bool isSeparation)
     {
         if (isSeparation)
         {
