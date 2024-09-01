@@ -13,41 +13,32 @@ public class Cube : MonoBehaviour
     private void Start()
     {
         SetRandomColor();
+        ReduceImpact();
+        Debug.Log(_separationProbability);
     }
 
     private void OnMouseUpAsButton()
     {
-        OnClick(GetProbability(_separationProbability));
+        if (IsProbable(_separationProbability))
+            Separation?.Invoke(this);
+
+        Destroy(this.gameObject);
     }
 
-    private void OnDestroy()
-    {
-        Separation = null;
-    }
-
-    public void MitigateImpact()
+    private void ReduceImpact()
     {
         _separationProbability /= _decreaseNumber;
         transform.localScale /= _decreaseNumber;
     }
 
-    private void OnClick(bool isSeparation)
-    {
-        if (isSeparation)
-            Separation?.Invoke(this);
-           
-        Destroy(this.gameObject);   
-    }
-
-    private bool GetProbability(int separationProbability)
+    private bool IsProbable(int separationProbability)
     {
         int minimum = 1;
         int maximum = 100;
         return UnityEngine.Random.Range(minimum, ++maximum) <= separationProbability;
     }
 
-    private void SetRandomColor()
-    {
+    private void SetRandomColor() =>
         GetComponent<Renderer>().material.color = UnityEngine.Random.ColorHSV();
-    }
+
 }
