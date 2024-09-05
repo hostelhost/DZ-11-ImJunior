@@ -5,17 +5,18 @@ using UnityEngine;
 
 public class Cube : MonoBehaviour
 {
-    public int SeparationProbability { get; private set; }
     private int _decreaseNumber = 2;
 
     public event Action<Cube> Separation;
+
+    public int SeparationProbability { get; private set; }
 
     private void OnMouseUpAsButton()
     {
         if (IsProbable(SeparationProbability))
             Separation?.Invoke(this);
 
-        Destroy(this.gameObject);
+        Destroy(gameObject);
     }
 
     public void Initialize(int separationProbability)
@@ -23,7 +24,6 @@ public class Cube : MonoBehaviour
         SeparationProbability = separationProbability;
         SetRandomColor();
         ReduceImpact();
-        Debug.Log(SeparationProbability);
     }
 
     private void ReduceImpact()
@@ -41,5 +41,4 @@ public class Cube : MonoBehaviour
 
     private void SetRandomColor() =>
         GetComponent<Renderer>().material.color = UnityEngine.Random.ColorHSV();
-
 }
