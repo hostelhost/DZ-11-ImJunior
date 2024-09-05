@@ -3,23 +3,21 @@ using UnityEngine;
 
 public class ForceApplier : MonoBehaviour
 {
-    [SerializeField] private float _explosiveForce = 10f;
-
-    public void BlowUp(Vector3 explosionPosition, float radius)
+    public void BlowUp(List<Rigidbody> rigidbodies)
     {
-        foreach (Rigidbody rigidbody in GetNearRigidbodies(explosionPosition, radius))
-            rigidbody.AddExplosionForce(_explosiveForce, explosionPosition, radius);
+        foreach (Rigidbody rigidbody in rigidbodies)        
+            rigidbody.AddForce(RandomForce());        
     }
 
-    private List<Rigidbody> GetNearRigidbodies(Vector3 explosionPosition, float radius)
+    private Vector3 RandomForce()
     {
-        Collider[] colliders = Physics.OverlapSphere(explosionPosition, radius);
-        List<Rigidbody> rigidbodies = new();
+        return new Vector3(RandomNumber(), RandomNumber(), RandomNumber());
+    }
 
-        foreach (Collider collider in colliders)
-            if (collider.attachedRigidbody != null)
-                rigidbodies.Add(collider.attachedRigidbody);
-
-        return rigidbodies;
+    private int RandomNumber()
+    { 
+        int minimum = 1;
+        int maximum = 25;
+        return Random.Range(minimum, ++maximum);
     }
 }

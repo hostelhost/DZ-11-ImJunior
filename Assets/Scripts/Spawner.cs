@@ -19,12 +19,12 @@ public class Spawner : MonoBehaviour
     
     private void OnSeparation(Cube cube)
     {
-        CreateCubes(cube);
-        _forceApplier.BlowUp(cube.transform.position, cube.transform.localScale.x);
+        _forceApplier.BlowUp(CreateCubes(cube));
     }
 
-    private void CreateCubes(Cube cube)
+    private List<Rigidbody> CreateCubes(Cube cube)
     {
+        List<Rigidbody> rigidbodies = new();
         Cube newCube;
         int minimumNumberObjects = 2;
         int maximumNumberObjects = 6;
@@ -35,8 +35,10 @@ public class Spawner : MonoBehaviour
             newCube = Instantiate(cube, cube.transform.position, Quaternion.identity);
             newCube.Separation += OnSeparation;
             newCube.Initialize(cube.SeparationProbability);
+            rigidbodies.Add(newCube.GetComponent<Rigidbody>());
         }
 
         cube.Separation -= OnSeparation;
+        return rigidbodies;
     }
 }
